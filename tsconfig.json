@@ -8,6 +8,8 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"]
-    }
+    },
+    "module": "nodenext",              // or "node16" or "bundler"
+    "moduleResolution": "nodenext",    // or "node16" or "bundler"
   }
 }
