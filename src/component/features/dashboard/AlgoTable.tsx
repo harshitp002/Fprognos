@@ -1,6 +1,11 @@
 import React from "react";
+import { Eye, Pencil, Copy, Trash2 } from "lucide-react";
 
-export const AlgoTable = () => {
+interface AlgoTableProps {
+  onIconClick: (mode: "view" | "edit" | "copy" | "delete") => void;
+}
+
+export const AlgoTable = ({ onIconClick }: AlgoTableProps) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-4/5 divide-y divide-gray-200">
@@ -16,6 +21,7 @@ export const AlgoTable = () => {
             <th className="px-4 py-2">Time</th>
             <th className="px-4 py-2">Signal</th>
             <th className="px-4 py-2">Multiplier</th>
+            <th className="px-4 py-2">Action</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -37,6 +43,12 @@ export const AlgoTable = () => {
               <td className="px-4 py-2">09:15 - 15:15</td>
               <td className="px-4 py-2 text-blue-600">BUY/SELL</td>
               <td className="px-4 py-2">1x</td>
+              <td className="px-4 py-2 flex justify-center items-center gap-2">
+                <Eye className="w-4 h-4 text-gray-600 hover:text-black cursor-pointer" onClick={() => onIconClick("view")} />
+                <Pencil className="w-4 h-4 text-gray-600 hover:text-black cursor-pointer" onClick={() => onIconClick("edit")} />
+                <Copy className="w-4 h-4 text-gray-600 hover:text-black cursor-pointer" onClick={() => onIconClick("copy")} />
+                <Trash2 className="w-4 h-4 text-red-500 hover:text-red-700 cursor-pointer" onClick={() => onIconClick("delete")} />
+              </td>
             </tr>
           ))}
         </tbody>
@@ -44,3 +56,4 @@ export const AlgoTable = () => {
     </div>
   );
 };
+

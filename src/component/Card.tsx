@@ -8,7 +8,7 @@ interface CardProps {
 
 export const Card = ({ id, pnl }: CardProps) => {
   return (
-    <div className="relative bg-white shadow p-4 rounded w-48">
+    <div className="relative bg-white shadow p-4 rounded w-48 transition-all duration-200 hover:shadow-lg hover:scale-105 hover:bg-blue-50">
       {/* Settings Button */}
       <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
         <Settings className="w-4 h-4" />
@@ -20,7 +20,7 @@ export const Card = ({ id, pnl }: CardProps) => {
       {/* PNL Line */}
       <div className="text-sm font-medium text-gray-600">
         PNL – <span className={`text-lg font-bold ${pnl > 0 ? 'text-green-500' : 'text-red-500'}`}>
-          ₹{pnl.toLocaleString()}
+        ₹{Math.abs(pnl).toLocaleString()}
         </span>
       </div>
 
