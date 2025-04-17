@@ -9,9 +9,8 @@ interface StrategyPanelProps {
 const StrategyPanel = ({ mode, onClose }: StrategyPanelProps) => {
 
     const [selectedDays, setSelectedDays] = useState(['Monday']);
-    const [strategyName, setStrategyName] = useState('Testing2');
-    const [target, setTarget] = useState(1000);
-    const [stoploss, setStoploss] = useState(1000);
+    const [targetValue, setTargetValue] = useState("");
+    const [stoplossValue, setStoplossValue] = useState("");
 
     const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -22,10 +21,19 @@ const StrategyPanel = ({ mode, onClose }: StrategyPanelProps) => {
     };
 
     const statuses = [
-        { label: "IIFL API: Not Running", color: "bg-red-400" },
-        { label: "Live Feed: Not Running", color: "bg-red-400" },
+        { label: "IIFL API: Not Running", color: "bg-red-500" },
+        { label: "Live Feed: Not Running", color: "bg-green-500" },
         { label: "Algo: Running", color: "bg-green-500" },
     ];
+
+    const rowData = new Array(4).fill({});
+
+    const handleNumberInput = (e, setter) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+            setter(value);
+        }
+    };
 
     const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
     const minutes = ['00', '15', '30', '45']
@@ -33,39 +41,13 @@ const StrategyPanel = ({ mode, onClose }: StrategyPanelProps) => {
     return (
         <div className="w-[1250px] h-[650px] overflow-y-auto bg-white rounded-md shadow text-sm ">
             {/* Title */}
-            <div className="h-16  bg-blue-400  flex justify-between items-center p-4  ">
-                <h2 className="text-2xl font-semibold text-white">STRATEGY</h2>
-                <button
-                    className="text-gray-600 hover:text-black"
-                    onClick={onClose}
-                >
-                    <X className="h-6 w-6" />
-                </button>
-            </div>
-
-            <div className="flex justify-between items-start flex-wrap gap-4 p-4">
-                {/* Days Selection */}
-                <div className="flex flex-wrap gap-2">
-                    {weekdays.map((day) => (
-                        <button
-                            key={day}
-                            onClick={() => toggleDay(day)}
-                            className={`px-2 py-2 rounded-lg text-sm font-medium border ${selectedDays.includes(day)
-                                ? 'bg-blue-400 text-white'
-                                : 'bg-blue-100 border-gray-300 text-gray-600'
-                                }`}
-                        >
-                            {day}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Status Indicators */}
+            <div className="h-16 flex justify-between items-center  p-4 ">
+                <h2 className="text-4xl font-semibold text-blue-800">Strategy</h2>
                 <div className="flex gap-2 flex-wrap">
                     {statuses.map((s, idx) => (
                         <span
                             key={idx}
-                            className={`${s.color} text-white px-2 py-2 rounded-lg text-sm font-medium border `}
+                            className={`${s.color} text-white px-2 py-2 rounded-lg text-lg font-normal border `}
                         >
                             {s.label}
                         </span>
@@ -73,42 +55,61 @@ const StrategyPanel = ({ mode, onClose }: StrategyPanelProps) => {
                 </div>
             </div>
 
+            <div className=' border border-gray-300 border-1 m-4 rounded-xl'>
+                <div className="flex justify-between items-start flex-wrap gap-4 bg-blue-200 pl-4 py-3 rounded-t-xl">
+                    {/* Days Selection */}
+                    <div className="flex flex-wrap gap-2">
+                        {weekdays.map((day) => (
+                            <button
+                                key={day}
+                                onClick={() => toggleDay(day)}
+                                className={`px-2 py-2 rounded-lg text-sm font-medium border ${selectedDays.includes(day)
+                                    ? 'bg-blue-400 text-white'
+                                    : 'bg-blue-100 border-blue-200 text-gray-600'
+                                    }`}
+                            >
+                                {day}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                {/* 2. Strategy Settings */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 p-4 bg-blue-50 rounded-b-xl ">
+                    <div className="flex flex-col">
+                        <label className="text-md font-semibold text-gray-700">Product</label>
+                        <select className="border border-gray-300 bg-gray-100 p-2 rounded-md text-sm font-semibold">
+                            <option>INTRADAY</option>
+                            <option>DELIVERY</option>
+                        </select>
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="text-md font-semibold text-gray-700">Expiry</label>
+                        <select className="border border-gray-300 bg-gray-100 p-2 rounded-md text-sm font-semibold">
+                            <option>WEEKLY</option>
+                            <option>MONTHLY</option>
+                        </select>
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="text-md font-semibold text-gray-700">Exchange</label>
+                        <select className="border border-gray-300 bg-gray-100 p-2 rounded-md text-sm font-semibold">
+                            <option>NSE</option>
+                            <option>BSE</option>
+                        </select>
+                    </div>
+                    <div className="flex flex-col">
+                        <label className="text-md font-semibold text-gray-700">Order Type</label>
+                        <select className="border border-gray-300 bg-gray-100 p-2 rounded-md text-sm font-semibold">
+                            <option>MARKET</option>
+                            <option>LIMIT</option>
+                        </select>
+                    </div>
+                </div>
 
-            {/* 2. Strategy Settings */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 border border-gray-300 border-1  p-4 m-4 rounded-xl  ">
-                <div className="flex flex-col">
-                    <label className="text-md font-medium text-gray-700">Product</label>
-                    <select className="border border-gray-300 bg-gray-100 p-2 rounded-md text-sm">
-                        <option>INTRADAY</option>
-                        <option>DELIVERY</option>
-                    </select>
-                </div>
-                <div className="flex flex-col">
-                    <label className="text-md font-medium text-gray-700">Expiry</label>
-                    <select className="border border-gray-300 bg-gray-100 p-2 rounded-md text-sm">
-                        <option>WEEKLY</option>
-                        <option>MONTHLY</option>
-                    </select>
-                </div>
-                <div className="flex flex-col">
-                    <label className="text-md font-medium text-gray-700">Exchange</label>
-                    <select className="border border-gray-300 bg-gray-100 p-2 rounded-md text-sm">
-                        <option>NSE</option>
-                        <option>BSE</option>
-                    </select>
-                </div>
-                <div className="flex flex-col">
-                    <label className="text-md font-medium text-gray-700">Order Type</label>
-                    <select className="border border-gray-300 bg-gray-100 p-2 rounded-md text-sm">
-                        <option>MARKET</option>
-                        <option>LIMIT</option>
-                    </select>
-                </div>
             </div>
 
 
             {/* Checkboxes Row */}
-            <div className="p-4 space-y-8 font-medium text-gray-600 text-base">
+            <div className="p-1 space-y-8 font-medium text-gray-600 text-base border border-gray-300 border-1 m-4 rounded-xl bg-blue-50">
                 <div className="flex justify-center mt-4 gap-x-8">
                     <label className="flex items-center gap-2">
                         <input type="checkbox" className="w-4 h-4" />
@@ -121,7 +122,7 @@ const StrategyPanel = ({ mode, onClose }: StrategyPanelProps) => {
                         <Info className="w-4 h-4 text-blue-500" />
                     </label>
                 </div>
-                <div className="flex flex-wrap gap-x-8 gap-y-4 justify-center">
+                <div className="flex flex-wrap gap-x-8 gap-y-4 justify-center mb-4">
                     <label className="flex items-center gap-2">
                         <input type="checkbox" className="w-4 h-4" />
                         <span>Wait For Momentum</span>
@@ -152,172 +153,241 @@ const StrategyPanel = ({ mode, onClose }: StrategyPanelProps) => {
 
             {/* Target / Stoploss */}
             <div className="flex justify-center gap-12 my-4">
+                {/* Target */}
                 <div className="flex items-center gap-2">
                     <span className="text-md">Target</span>
-                    <div className="relative">
+                    <div className="flex items-center gap-2">
                         <input
                             type="text"
-                            className="border rounded-md pl-2 pr-8 py-2 w-32 bg-gray-50"
+                            value={targetValue}
+                            onChange={(e) => handleNumberInput(e, setTargetValue)}
+                            className="border rounded-md pl-2 py-2 w-32 bg-gray-50"
                             placeholder=""
                         />
-                        <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-500">
-                            <Plus className="w-5 h-5" />
+                        <button
+                            onClick={() => setTargetValue("")}
+                            className="text-black-500 font-semibold hover:text-red-700"
+                            title="Clear Target"
+                        >
+                            <X className="w-6 h-6" />
                         </button>
                     </div>
                 </div>
 
+                {/* Stoploss */}
                 <div className="flex items-center gap-2">
                     <span className="text-md">Stoploss</span>
-                    <div className="relative">
+                    <div className="flex items-center gap-2">
                         <input
                             type="text"
-                            className="border rounded-md pl-2 pr-8 py-2 w-32 bg-gray-50"
+                            value={stoplossValue}
+                            onChange={(e) => handleNumberInput(e, setStoplossValue)}
+                            className="border rounded-md pl-2 py-2 w-32 bg-gray-50"
                             placeholder=""
                         />
-                        <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-500">
-                            <Plus className="w-5 h-5" />
+                        <button
+                            onClick={() => setStoplossValue("")}
+                            className="text-black-500 font-semibold hover:text-red-700"
+                            title="Clear Stoploss"
+                        >
+                            <X className="w-6 h-6" />
                         </button>
                     </div>
                 </div>
             </div>
 
-
             {/* Strategy Name + Add Log */}
-            <div className="flex gap-4 px-4 my-4">
-                <input
-                    type="text"
-                    placeholder="Strategy Name"
-                    value={strategyName}
-                    onChange={(e) => setStrategyName(e.target.value)}
-                    className="border rounded-md p-2 "
-                />
-
-                <select className="border rounded-md p-2 w-32">
-                    <option>NIFTY</option>
-                    <option>BANKNIFTY</option>
-                    <option>FINNIFTY</option>
-                </select>
-
-                <button className="bg-blue-500 text-white rounded-md p-2 w-32">
-                    OPTION
-                </button>
-
-                <button className="bg-blue-500 text-white rounded-md p-2 w-32">
-                    Add Leg
-                </button>
+            <div className="flex items-center gap-4 m-4">
+                <button className="bg-indigo-500 text-white px-4 py-2 rounded-3xl">Add Log</button>
+                <div className="flex flex-row gap-1">
+                    <label className="text-sm font-semibold  text-gray-500 content-center">Strategy Name:</label>
+                    <input
+                        type="text"
+                        maxLength={40}
+                        placeholder="Strategy Name (up to 40 characters)"
+                        className="border border-gray-300 px-3 py-1 rounded-md text-sm w-[300px] text-gray-600 font-medium bg-gray-100"
+                    />
+                </div>
             </div>
 
+
             {/* Logs Table (Simplified Version) */}
-            <div className="overflow-x-auto rounded-lg border border-gray-300 p-4 m-4 ">
-                <table className="table-auto w-full text-center text-sm">
-                    <thead>
-                        <tr className="bg-white border border-gray-300 bg-white font-extrabold text-lg text-gray-700">
-                            <th className='border border-gray-300 bg-white'>Lot</th>
-                            <th className='border border-gray-300 bg-white'>Entry Choice</th>
-                            <th className='border border-gray-300 bg-white'>Action</th>
-                            <th className='border border-gray-300 bg-white'>Symbol</th>
-                            <th className='border border-gray-300 bg-white'>Expiry</th>
-                            <th className='border border-gray-300 bg-white'>Target</th>
-                            <th className='border border-gray-300 bg-white'>Stoploss</th>
-                            <th className='border border-gray-300 bg-white'>TrailStoploss</th>
-                            <th className='border border-gray-300 bg-white'>Action</th>
+            <div className="overflow-x-auto m-4 border-thin border-gray-300">
+                <table className=" table-auto  border mt-4 text-sm text-center">
+                    <thead className=" bg-white border border-gray-300 bg-white font-extrabold text-base text-gray-500">
+                        <tr >
+                            {[
+                                "Lot",
+                                "Entry Choice",
+                                "Variation",
+                                "Action",
+                                "Option",
+                                "Script",
+                                "Expiry",
+                                "Target",
+                                "Stoploss",
+                                "Trail Stoploss",
+                                "ReEntry Execute",
+                            ].map((heading) => (
+                                <th key={heading} className="p-2 whitespace-nowrap ">
+                                    {heading}
+                                </th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            {/* Lot */}
-                            <td>
-                                <div className="flex flex-col items-center gap-1 p-1">
-                                    <div className='w-full flex flex-row gap-2'>
-                                        <span className="text-md bg-gray-100 w-1/2 h-8 py-1 rounded-md font-medium ">1</span>
-                                        <span className="text-md bg-gray-100 w-1/2 h-8 py-1 rounded-md font-medium ">(x75)</span>
-                                    </div>
-                                    <button className="w-full h-8 text-md bg-gray-100 px-2 py-1 rounded-md font-medium">
-                                        INTRADAY
-                                    </button>
-                                </div>
-                            </td>
+                        {rowData.map((_, i) => (
+                            <tr key={i} >
+                                {/* Lot */}
+                                <td className="p-2 ">
+                                    <input
+                                        type="number"
+                                        defaultValue={1}
+                                        className="border rounded px-1 py-1 w-8 text-center bg-gray-100"
+                                    />
+                                </td>
 
-                            {/* Entry Choice */}
-                            <td>
-                                <div className=" flex flex-col items-center gap-1 p-1 w-full">
-                                    <select className="w-full h-8 text-md bg-gray-100 px-2 py-1 rounded-md font-medium">
+                                {/* Entry Choice */}
+                                <td className="p-2">
+                                    <select className=" border rounded px-2 py-1 bg-gray-100">
                                         <option>ATM Point</option>
                                     </select>
-                                    <div className='w-full flex flex-row gap-2'>
-                                        <button className="text-md bg-gray-100 w-1/2 h-8 py-1 rounded-md font-medium">ATM</button>
-                                        <button className="text-md bg-gray-100 w-1/2 h-8 py-1 rounded-md font-medium">ATM+200</button>
-                                    </div>
-                                </div>
-                            </td>
+                                </td>
 
-                            {/* Action */}
-                            <td>
-                                <div className="flex flex-col items-center gap-1 p-1">
-                                    <button className="w-full rounded-md bg-red-500 px-2 py-1 text-white font-semibold">SELL</button>
-                                    <button className="w-full rounded-md bg-green-500 px-2 py-1 text-white font-semibold">CALL</button>
-                                </div>
-                            </td>
 
-                            {/* Symbol */}
-                            <td>
-                                <div className="flex flex-col items-center gap-1 p-1">
-                                    <button className="w-full rounded-md bg-blue-200 px-3 py-1 text-blue-700 font-semibold">N</button>
-                                </div>
-                            </td>
-
-                            {/* Expiry */}
-                            <td>
-                                <div className="flex flex-col items-center gap-1 p-1">
-                                    <select className="w-full h-8 text-md bg-gray-100 px-2 py-1 rounded-md font-medium">
-                                        <option>WEEKLY</option>
+                                {/* Variation */}
+                                <td className="p-2">
+                                    <select className="border rounded px-2 py-1 bg-gray-100">
+                                        <option>ATM</option>
                                     </select>
-                                </div>
-                            </td>
+                                </td>
 
-                            {/* Target */}
-                            <td>
-                                <div className="flex items-center justify-center h-full">
-                                    <button className="flex items-center justify-center h-8 w-8 text-blue-500  hover:text-blue-700">
-                                        <Plus size={24} strokeWidth={3} />
-                                    </button>
-                                </div>
-                            </td>
+                                {/* Action */}
+                                <td className="p-2 ">
+                                    <span className="bg-green-500 text-white px-3 py-2 rounded-full text-xs font-semibold">
+                                        BUY
+                                    </span>
+                                </td>
 
-                            {/* Stoploss */}
-                            <td>
-                                <div className="flex items-center justify-center h-full">
-                                    <button className="flex items-center justify-center h-8 w-8 text-blue-500  hover:text-blue-700">
-                                        <Plus size={24} strokeWidth={3} />
-                                    </button>
-                                </div>
-                            </td>
+                                {/* Option */}
+                                <td className="p-2 ">
+                                    <span className="bg-orange-500 text-white px-3 py-2 rounded-full text-xs font-semibold">
+                                        CALL
+                                    </span>
+                                </td>
 
-                            {/* TrailStoploss */}
-                            <td>
-                                <div className="flex items-center justify-center h-full">
-                                    <button className="flex items-center justify-center h-8 w-8 text-blue-500  hover:text-blue-700">
-                                        <Plus size={24} strokeWidth={3} />
-                                    </button>
-                                </div>
-                            </td>
+                                {/* Script */}
+                                <td className="p-2 ">
+                                    <span className="bg-cyan-500 text-white px-3 py-2 rounded-full text-xs font-semibold">
+                                        BN
+                                    </span>
+                                </td>
 
-                            {/* Delete Action */}
-                            <td>
-                                <div className="flex items-center justify-center h-full">
-                                    <button className="flex items-center justify-center h-8 w-8 text-red-500  hover:text-red-700">
-                                        <Trash2 size={24} strokeWidth={3} />
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                {/* Expiry */}
+                                <td className="p-2">
+                                    <select className="border rounded px-2 py-1 bg-gray-100">
+                                        <option>Weekly</option>
+                                    </select>
+                                </td>
+
+                                {/* Target */}
+                                <td className="p-2 ">
+
+                                    <div className="flex items-center gap-2">
+                                        <select className="border rounded px-2 py-1">
+                                            <option>Point</option>
+                                        </select>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="text"
+                                                value={targetValue}
+                                                onChange={(e) => handleNumberInput(e, setTargetValue)}
+                                                className="border rounded-md pl-2 py-2 w-7 h-7 bg-gray-50"
+                                                placeholder=""
+                                            />
+                                            <button
+                                                onClick={() => setTargetValue("")}
+                                                className="text-red-500 font-semibold hover:text-red-700"
+                                                title="Clear Target"
+                                            >
+                                                <X className="w-6 h-6" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                {/* Stoploss */}
+                                <td className=" p-2">
+                                <div className="flex items-center gap-2">
+                                        <select className="border rounded px-2 py-1">
+                                            <option>SL Point</option>
+                                        </select>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="text"
+                                                value={stoplossValue}
+                                                onChange={(e) => handleNumberInput(e, setStoplossValue)}
+                                                className="border rounded-md pl-2 py-2 w-7 h-7 bg-gray-50"
+                                                placeholder=""
+                                            />
+                                            <button
+                                                onClick={() => setStoplossValue("")}
+                                                className="text-black-500 font-semibold hover:text-black-700"
+                                                title="Clear Target"
+                                            >
+                                                <X className="w-6 h-6" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                {/* Trail Stoploss */}
+                                <td className=" p-2">
+                                <div className="flex items-center gap-2">
+                                        <select className="border rounded px-2 py-1">
+                                            <option>SL Point</option>
+                                        </select>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="text"
+                                                value={stoplossValue}
+                                                onChange={(e) => handleNumberInput(e, setStoplossValue)}
+                                                className="border rounded-md pl-2 py-2 w-7 h-7 bg-gray-50"
+                                                placeholder=""
+                                            />
+                                            <input
+                                                type="text"
+                                                value={stoplossValue}
+                                                onChange={(e) => handleNumberInput(e, setStoplossValue)}
+                                                className="border rounded-md pl-2 py-2 w-7 h-7 bg-gray-50"
+                                                placeholder=""
+                                            />
+                                            <button
+                                                onClick={() => setStoplossValue("")}
+                                                className="text-black-500 font-semibold hover:text-black-700"
+                                                title="Clear Target"
+                                            >
+                                                <X className="w-6 h-6" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                {/* ReEntry Execute */}
+                                <td className="p-2 ">
+                                    <select className="border rounded px-2 py-1">
+                                        <option>Re-Execute</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
 
 
             {/* Time Selectors */}
-            <div className="rounded-lg border border-gray-300 p-4 m-4 flex justify-center items-start gap-16">
+            <div className="rounded-lg border border-gray-300 p-4 m-4 flex justify-center items-start gap-16 bg-blue-50">
                 {/* Start Time */}
                 <div className="flex flex-col items-start space-y-2">
                     <label className="text-base font-normal ">Start Time</label>
@@ -363,8 +433,8 @@ const StrategyPanel = ({ mode, onClose }: StrategyPanelProps) => {
                 </div>
             </div>
 
-           <div className="rounded-lg border border-gray-300 p-4 m-4">
-           </div>
+            <div className="rounded-lg border border-gray-300 p-4 m-4">
+            </div>
 
             {/* Bottom Buttons */}
             <div className="flex justify-between p-4">
@@ -380,8 +450,10 @@ const StrategyPanel = ({ mode, onClose }: StrategyPanelProps) => {
                     Cancel
                 </button>
             </div>
-        </div>
+        </div >
     );
 };
 
 export default StrategyPanel;
+
+

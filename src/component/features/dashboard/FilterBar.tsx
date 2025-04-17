@@ -39,7 +39,7 @@ const TopFilterBar: React.FC<TopFilterBarProps> = ({
           ))}
         </select>
         {/* Total PNL Label */}
-        <div className="text-xs font-medium text-[#4B3B8C]  px-5 py-2 bg-white rounded-3xl shadow-sm border border-gray-200">Total PNL</div>
+        <div className="text-xs font-medium text-[#4B3B8C]  px-5 py-2 bg-white rounded-3xl shadow-sm border border-gray-200">Total P&L</div>
         {/* Total PNL Value */}
         <div className="bg-white text-[#E73636]  rounded-xl px-4 py-1">
           {totalPNL}

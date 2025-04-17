@@ -26,20 +26,35 @@ const handleIconClick = (
   setIsModalOpen(true);
 };
 
+// MainContent.tsx
 export const MainContent = ({ selectedCards }: MainContentProps) => {
   const { totalPNL } = useSelector((state: RootState) => state.dashboard);
   const [selectedDay, setSelectedDay] = useState("Thursday");
   const [searchValue, setSearchValue] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"view" | "edit" | "copy" | "delete">("view");
+  const [selectedCardIds, setSelectedCardIds] = useState<number[]>([]);
+  const toggleCardSelection = (cardId: number) => {
+    setSelectedCardIds((prevSelected) =>
+      prevSelected.includes(cardId)
+        ? prevSelected.filter((id) => id !== cardId)
+        : [...prevSelected, cardId]
+    );
+  };
 
   return (
-    <div className="flex-1 p-4 space-y-6 overflow-auto">
+    <div className="flex-1 p-4 space-y-6 overflow-auto ">
       {/* Selected Cards */}
-      <div className="overflow-x-auto scroll-smooth no-scrollbar">
-        <div className="flex gap-4 mb-6 min-w-max">
+      <div className="overflow-x-auto scroll-smooth ">
+        <div className="flex gap-4 my-4 mx-4 min-w-max">
           {selectedCards.map((card) => (
-            <Card key={card.id} id={card.name} pnl={card.pnl} />
+            <Card
+              key={card.id}
+              id={card.name}
+              pnl={card.pnl}
+              selected={selectedCardIds.includes(card.id)}
+              onSelect={() => toggleCardSelection(card.id)}
+            />
           ))}
         </div>
       </div>
@@ -64,7 +79,7 @@ export const MainContent = ({ selectedCards }: MainContentProps) => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
+

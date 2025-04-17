@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { Eye, Pencil, Copy, Trash2 } from "lucide-react";
 
 interface AlgoTableProps {
