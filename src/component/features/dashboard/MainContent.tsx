@@ -34,11 +34,20 @@ export const MainContent = ({ selectedCards }: MainContentProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"view" | "edit" | "copy" | "delete">("view");
   const [selectedCardIds, setSelectedCardIds] = useState<number[]>([]);
+  const [visibleColumns, setVisibleColumns] = useState(["CLIENTID", "ALGO_STATUS", "DURATION", "INFO"]);
   const toggleCardSelection = (cardId: number) => {
     setSelectedCardIds((prevSelected) =>
       prevSelected.includes(cardId)
         ? prevSelected.filter((id) => id !== cardId)
         : [...prevSelected, cardId]
+    );
+  };
+
+  const toggleColumn = (column: string) => {
+    setVisibleColumns(prev =>
+      prev.includes(column)
+        ? prev.filter(col => col !== column)
+        : [...prev, column]
     );
   };
 
@@ -66,6 +75,8 @@ export const MainContent = ({ selectedCards }: MainContentProps) => {
         totalPNL={`₹${totalPNL.toLocaleString()}`}
         searchValue={searchValue}
         onSearchChange={setSearchValue}
+        visibleColumns={visibleColumns}
+        onToggleColumn={toggleColumn}
       />
 
       {/* Algo Table */}

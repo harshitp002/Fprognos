@@ -1,12 +1,29 @@
 import React,{useState} from "react";
 import { Eye, Pencil, Copy, Trash2 } from "lucide-react";
+import RenameModal from "../../RenameModal"; 
+import DuplicateModal from "../../DuplicateModal";
 
 interface AlgoTableProps {
   onIconClick: (mode: "view" | "edit" | "copy" | "delete") => void;
 }
 
 export const AlgoTable = ({ onIconClick }: AlgoTableProps) => {
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedStrategyName, setSelectedStrategyName] = useState("BN_ATM_THUR");
+  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+
+  const handleRename = (newName: string) => {
+    console.log("Renamed to:", newName);
+    setShowModal(false);
+  };
+
+  const handleDuplicate = (strategyName: string, broker: string, days: string[]) => {
+    console.log("Duplicated:", { strategyName, broker, days });
+  };
+
   return (
+    <>
     <div className="overflow-x-auto">
       <table className="min-w-4/5 divide-y divide-gray-200">
         <thead className="bg-gray-50">
@@ -45,15 +62,31 @@ export const AlgoTable = ({ onIconClick }: AlgoTableProps) => {
               <td className="px-4 py-2">1x</td>
               <td className="px-4 py-2 flex justify-center items-center gap-2">
                 <Eye className="w-4 h-4 text-gray-600 hover:text-black cursor-pointer" onClick={() => onIconClick("view")} />
-                <Pencil className="w-4 h-4 text-gray-600 hover:text-black cursor-pointer" onClick={() => onIconClick("edit")} />
+                <Pencil className="w-4 h-4 text-gray-600 hover:text-black cursor-pointer" onClick={() => setShowModal(true)} />
                 <Copy className="w-4 h-4 text-gray-600 hover:text-black cursor-pointer" onClick={() => onIconClick("copy")} />
-                <Trash2 className="w-4 h-4 text-red-500 hover:text-red-700 cursor-pointer" onClick={() => onIconClick("delete")} />
+                <Trash2 className="w-4 h-4 text-red-500 hover:text-red-700 cursor-pointer" onClick={() => setShowDuplicateModal(true)} />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
+    {/* Modal */}
+    <RenameModal
+    isOpen={showModal}
+    onClose={() => setShowModal(false)}
+    strategyName={selectedStrategyName}
+    onRename={handleRename}
+    />
+
+    {/* Duplicate Modal */}
+    <DuplicateModal
+    isOpen={showDuplicateModal}
+    onClose={() => setShowDuplicateModal(false)}
+    onDuplicate={handleDuplicate}
+  />
+
+  </>
   );
 };
 
